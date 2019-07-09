@@ -24,10 +24,12 @@ class Player:
             self.depo -= amount
         else:
             print(choice(["You can't bet more than you have", "Out of money", "Cannot afford", "Need more money"]))
-            self.table.bet_list.append(Bet(amount, cond, self))
+        self.table.bet_list.append(Bet(amount, cond, self))
 
 
 class Bet:
+    coefs = {'num': 36, 'colour': 1, 'half': 1, 'dozen': 2}
+
     def __init__(self, amount, condition: dict, player: Player):  # TODO: добавить проверку длины словаря!
         """
         Bet made by player.
@@ -49,6 +51,8 @@ class Bet:
         """
         Determine self.coef based on self.condition
         """
+        for key in self.condition:
+            return Bet.coefs[key]
 
 
 # Bet(100, {"half": 1}, Player()).coef
@@ -72,7 +76,7 @@ class Table:
         Result contains colour, num, half and dozen in which num is -> (num, colour, half, dozen)
         """
         num = randrange(1, 37)
-        colour = ["red", "black"][num in desk["black"]]  # исправлено
+        colour = ["red", "black"][num in Table.desk["black"]]  # исправлено
         half = [1, 2][19 <= num <= 36]
         if 0 <= num <= 12:
             dozen = 1
