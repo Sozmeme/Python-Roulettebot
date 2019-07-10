@@ -23,7 +23,7 @@ class Player:
 
         if len(cond) != 2:
             raise BetError('Wrong value(s)')
-        elif cond[1] not in ['num', 'colour', 'half', 'dozen', 'parity']:
+        elif cond[0] not in ['num', 'colour', 'half', 'dozen', 'parity']:
             raise BetError('Wrong value(s)')
         elif cond[0] is 'num' and (cond[1] > 36 or cond[1] < 1):
             raise BetError('Wrong value(s)')
