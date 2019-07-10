@@ -16,43 +16,42 @@ class Player:
         self.depo = depo
         self.table = table
 
-    def make_bet(self, amount, cond: dict):
+    def make_bet(self, amount, cond: tuple):
         """
         Create bet with win condition, add it on table
         """
+        if len(cond) != 2:
+            raise ValueError
         if self.depo >= amount:
             self.depo -= amount
+            self.table.bet_list.append(Bet(amount, cond, self))
         else:
             print(choice(["You can't bet more than you have", "Out of money", "Cannot afford", "Need more money"]))
-        self.table.bet_list.append(Bet(amount, cond, self))
 
 
 class Bet:
-    coefs = {'num': 36, 'colour': 1, 'half': 1, 'dozen': 2}
+    coefs = {'num': 72, 'colour': 2, 'half': 2, 'dozen': 4, 'parity': 2}
 
-    def __init__(self, amount, condition: dict, player: Player):  # TODO: добавить проверку длины словаря!
+    def __init__(self, amount, condition: tuple, player: Player):
         """
         Bet made by player.
         """
         self.amount = amount
-        # смотри строку 88, можешь использовать .update()
-        # добавить коэффициенты
-        self.condition = condition  # варианты: {"num": num}, {"colour": colour}, {"half": half}, {"dozen": half}
+        self.condition = condition
         self.player = player
 
     def check_for_win(self, result):
         """
         Returns True if bet wins
         """
-        return self.condition.popitem() in result.items()
+        return self.condition in result.items()
 
     @property
     def coef(self):
         """
         Determine self.coef based on self.condition
         """
-        for key in self.condition:
-            return Bet.coefs[key]
+        return Bet.coefs[self.condition[0]]
 
 
 # Bet(100, {"half": 1}, Player()).coef
@@ -70,12 +69,14 @@ class Table:
     def __init__(self):
         self.bet_list = []
         self.result = None
+        self.winners = []
 
     def ball_throw(self):
         """
         Result contains colour, num, half and dozen in which num is -> (num, colour, half, dozen)
         """
         num = randrange(1, 37)
+        parity = ["odd", "even"][num % 2 == 0]
         colour = ["red", "black"][num in Table.desk["black"]]  # исправлено
         half = [1, 2][19 <= num <= 36]
         if 0 <= num <= 12:
@@ -85,16 +86,32 @@ class Table:
         else:
             dozen = 3
 
-        self.result = {'num': num, 'colour': colour, 'half': half, 'dozen': dozen}  # TODO: добавить чет/нечет
+        self.result = {'num': num, 'colour': colour, 'half': half, 'dozen': dozen, 'parity': parity}
 
-    def update_depo(self):  # DONE?
+    def update_depo(self):
         """
         Update depo for each win bet owner according to bet coef
         """
         while self.bet_list:
             bet = self.bet_list.pop()
             if bet.check_for_win(self.result):
+                self.winners.append(bet.player.name)
                 bet.player.depo += bet.amount * bet.coef
+
+    def no_more_bets(self):
+        print('Ball has been thrown!')
+        self.ball_throw()
+        print('Current result:')
+        print(self.result)
+        print('Lucky ones:')
+        print(*self.winners)
+        self.update_depo()
+
+
+class BetError(Bet):
+    def __init__(self):
+        pass
+
 
 ###################################################
 # Пример работы
