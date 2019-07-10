@@ -98,17 +98,17 @@ class Table:
                 self.winners.append(bet.player.name)
                 bet.player.depo += bet.amount * bet.coef
 
+
     def no_more_bets(self):
         print('Ball has been thrown!')
         self.ball_throw()
-        print('Current result:')
-        print(self.result)
-        print('Lucky ones:')
-        print(*self.winners)
+        print('Current result: {}'.format(self.result))
         self.update_depo()
+        print('Lucky ones: {}'.format(self.winners))
+        self.winners.clear()
 
 
-class BetError(Bet):
+class BetError:
     def __init__(self):
         pass
 
