@@ -21,6 +21,15 @@ class Player:
         Create bet with win condition, add it on table
         """
 
+        Player.check_valid(cond)
+
+        if self.depo >= amount:
+            self.depo -= amount
+            self.table.bet_list.append(Bet(amount, cond, self))
+        else:
+            print(choice(["You can't bet more than you have", "Out of money", "Cannot afford", "Need more money"]))
+
+    def check_valid(self, cond: tuple):
         if len(cond) != 2:
             raise BetError('Wrong value(s)')
         elif cond[0] not in ['num', 'colour', 'half', 'dozen', 'parity']:
@@ -35,12 +44,6 @@ class Player:
             raise BetError('Wrong value(s)')
         elif cond[0] is 'parity' and cond[1] not in ['odd', 'even']:
             raise BetError('Wrong value(s)')
-
-        if self.depo >= amount:
-            self.depo -= amount
-            self.table.bet_list.append(Bet(amount, cond, self))
-        else:
-            print(choice(["You can't bet more than you have", "Out of money", "Cannot afford", "Need more money"]))
 
 
 class Bet:
@@ -125,6 +128,8 @@ class Table:
 class BetError:
     def __init__(self):
         pass
+
+
 
 
 ###################################################
