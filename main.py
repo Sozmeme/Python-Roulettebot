@@ -5,13 +5,14 @@ from random import randrange, choice
 
 
 class Player:
-    """
-    Что нам надо знать про игрока?
-    Имя, депо, стол
-    Игрок может делать ставки на стол за которым сидит
-    """
 
     def __init__(self, name, depo, table):
+        """
+        Player object
+        :param name:
+        :param depo:
+        :param table:
+        """
         self.name = name
         self.depo = depo
         self.table = table
@@ -23,26 +24,30 @@ class Player:
 
         Player.check_valid(self, cond)
 
-        if self.depo >= amount:
+        if 0 < amount < self.depo:
             self.depo -= amount
             self.table.bet_list.append(Bet(amount, cond, self))
-        else:
+        elif amount > self.depo:
             print(choice(["You can't bet more than you have", "Out of money", "Cannot afford", "Need more money"]))
+        elif amount < 0:
+            print(choice(["You can't bet less than 1!", "Nice try", "Try one more time"]))
 
     def check_valid(self, cond: tuple):
+        # TODO: Make different messages
+        print(f"Attempt to bet {cond}")
         if len(cond) != 2:
             raise BetError('Wrong value(s)')
         elif cond[0] not in ['num', 'colour', 'half', 'dozen', 'parity']:
             raise BetError('Wrong value(s)')
-        elif cond[0] is 'num' and (cond[1] > 36 or cond[1] < 1):
+        elif cond[0] == 'num' and (cond[1] > 36 or cond[1] < 1):
             raise BetError('Wrong value(s)')
-        elif cond[0] is 'colour' and cond[1] not in ['black', 'red']:
+        elif cond[0] == 'colour' and cond[1] not in ['black', 'red']:
             raise BetError('Wrong value(s)')
-        elif cond[0] is 'half' and cond[1] not in [1, 2]:
+        elif cond[0] == 'half' and cond[1] not in [1, 2]:
             raise BetError('Wrong value(s)')
-        elif cond[0] is 'dozen' and cond[1] not in [1, 2, 3]:
+        elif cond[0] == 'dozen' and cond[1] not in [1, 2, 3]:
             raise BetError('Wrong value(s)')
-        elif cond[0] is 'parity' and cond[1] not in ['odd', 'even']:
+        elif cond[0] == 'parity' and cond[1] not in ['odd', 'even']:
             raise BetError('Wrong value(s)')
 
 
@@ -122,7 +127,7 @@ class Table:
         self.winners.clear()
 
 
-class BetError(ValueError):
+class BetError(Exception):
     """
     BetError class
     """
