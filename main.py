@@ -21,7 +21,7 @@ class Player:
         Create bet with win condition, add it on table
         """
 
-        Player.check_valid(cond)
+        Player.check_valid(self, cond)
 
         if self.depo >= amount:
             self.depo -= amount
@@ -69,9 +69,6 @@ class Bet:
         Determine self.coef based on self.condition
         """
         return Bet.coefs[self.condition[0]]
-
-
-# Bet(100, {"half": 1}, Player()).coef
 
 
 class Table:
@@ -125,9 +122,10 @@ class Table:
         self.winners.clear()
 
 
-class BetError:
-    def __init__(self):
-        pass
+class BetError(ValueError):
+    """
+    BetError class
+    """
 
 
 
@@ -139,5 +137,4 @@ class BetError:
 # player2 = Player("Player 2", 1000, table)
 # player1.make_bet(100, {"half": 1})
 # player2.make_bet(200, {"color": "red"})
-# table.ball_throw()
-# table.update_depo()
+# table.no_more_bets()
