@@ -11,7 +11,11 @@ class GameManager:
         self.name_list = []
         self.player_list = []
         self.default_depo = default_depo
-
+        self.greeting = """
+                        Hello! It's my very first game and here you can play roulette!\n
+                        You can bet on colour(black/red), number(1-36), parity(odd/even), half(1/2) and dozen(1-3).\n
+                        To exit press CTRL + C.\n
+                        """
         with open('player_data.json') as f:
             self.player_data = json.load(f)
 
@@ -63,21 +67,21 @@ class GameManager:
             self.play_round()
             print("Current deposits:")
             self.cur_depo()
-            print('Press CTRL + C to end the game')
 
     def stop_game(self):
         print("Good bye! It was very nice to get your money!")
-        pass
+        exit()
 
     def cur_depo(self):
         for player in self.player_list:
             print('{} - {}'.format(player.name, player.depo))
 
+
 if __name__ == '__main__':
     manager = GameManager()
+    print(manager.greeting)
     manager.set_up()
     try:
         manager.start_game()
     except KeyboardInterrupt:
         manager.stop_game()
-        raise KeyboardInterrupt()
